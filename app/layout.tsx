@@ -8,6 +8,16 @@ import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import "./globals.css";
 import { createClient } from "@/utils/supabase/server";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { MobileNav } from "@/components/mobile-nav";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -48,15 +58,67 @@ export default async function RootLayout({
             <div className="flex-1 w-full flex flex-col items-center">
               { isLoggedIn &&
                 <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-                  <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-                    <div className="flex gap-5 items-center font-semibold">
-                      <Link href={"/"}>币安</Link>
+                  <div className="w-full flex justify-between items-center p-3 px-5 text-sm">
+                    <div className="flex gap-5 items-center">
+                      <Link href="/" className="text-xl font-bold">币安</Link>
+                      {/* 桌面端导航菜单 */}
+                      <div className="hidden md:block">
+                        <NavigationMenu>
+                          <NavigationMenuList>
+                            {/* 交易菜单 */}
+                            <NavigationMenuItem>
+                              <NavigationMenuTrigger>交易</NavigationMenuTrigger>
+                              <NavigationMenuContent>
+                                <ul className="w-[200px] p-2">
+                                  <li>
+                                    <Link href="/spot" legacyBehavior passHref>
+                                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                        现货交易
+                                      </NavigationMenuLink>
+                                    </Link>
+                                  </li>
+                                </ul>
+                              </NavigationMenuContent>
+                            </NavigationMenuItem>
+
+                            {/* 合约菜单 */}
+                            <NavigationMenuItem>
+                              <NavigationMenuTrigger>合约</NavigationMenuTrigger>
+                              <NavigationMenuContent>
+                                <ul className="w-[200px] p-2 space-y-2">
+                                  <li>
+                                    <Link href="/futures/usdt" legacyBehavior passHref>
+                                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                        U本位合约
+                                      </NavigationMenuLink>
+                                    </Link>
+                                  </li>
+                                  <li>
+                                    <Link href="/futures/coin" legacyBehavior passHref>
+                                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                        币本位合约
+                                      </NavigationMenuLink>
+                                    </Link>
+                                  </li>
+                                </ul>
+                              </NavigationMenuContent>
+                            </NavigationMenuItem>
+                          </NavigationMenuList>
+                        </NavigationMenu>
+                      </div>
                     </div>
-                    {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
+                    <div className="flex items-center gap-4">
+                      {/* 移动端导航菜单 */}
+                      <MobileNav isLoggedIn={isLoggedIn} />
+                      {/* 桌面端用户菜单 */}
+                      <div className="hidden md:block">
+                        {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
+                      </div>
+                    </div>
                   </div>
                 </nav>
               }
-              <div className="w-full flex flex-col gap-20 max-w-5xl p-5">
+              <div className="w-full flex flex-col gap-20">
                 {children}
               </div>
             </div>

@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronDown, Key, User } from "lucide-react";
+import { ChevronDown, Key, LogOut } from "lucide-react";
 import UnbindButton from "@/app/components/unbind-button";
 
 async function getBinanceUsers(userId: string) {
@@ -114,13 +114,11 @@ export default async function AuthButton() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
-          <DropdownMenuLabel>账户管理</DropdownMenuLabel>
-          <DropdownMenuSeparator />
           
           {/* 币安账户列表 */}
           {binanceData?.users && binanceData.users.length > 0 ? (
             <>
-              <DropdownMenuLabel className="text-xs text-gray-500">币安账户</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs text-gray-500">账户</DropdownMenuLabel>
               {binanceData.users.map((binanceUser) => (
                 <div key={binanceUser.id} className="flex items-center px-2">
                   <form action={switchBinanceUserAction} className="flex-1">
@@ -151,27 +149,24 @@ export default async function AuthButton() {
               <DropdownMenuSeparator />
             </>
           ) : null}
-
-          {/* 绑定币安API入口 */}
-          <DropdownMenuItem asChild>
-            <Link href="/bind-api" className="flex items-center gap-2 cursor-pointer">
-              <Key className="h-4 w-4" />
-              <span>绑定币安API</span>
-            </Link>
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-          
-          {/* 退出登录 */}
-          <form action={signOutAction}>
-            <DropdownMenuItem asChild>
-              <button type="submit" className="w-full text-left text-red-600 hover:text-red-700">
-                退出登录
-              </button>
-            </DropdownMenuItem>
-          </form>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* 绑定币安API按钮 */}
+      <Button asChild size="sm" variant="outline" className="gap-2">
+        <Link href="/bind-api">
+          <Key className="h-4 w-4" />
+          <span>绑定API</span>
+        </Link>
+      </Button>
+
+      {/* 退出登录按钮 */}
+      <form action={signOutAction}>
+        <Button type="submit" size="sm" variant="ghost" className="text-red-600 hover:text-red-700 gap-2">
+          <LogOut className="h-4 w-4" />
+          <span>退出</span>
+        </Button>
+      </form>
     </div>
   );
 }
