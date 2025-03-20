@@ -1,5 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { User } from "@supabase/supabase-js";
+import Binance from 'node-binance-api';
+
+const API_BASE_URL = "http://52.194.218.184:3001"
 
 export interface BinanceUser {
   id: string;
@@ -50,6 +53,68 @@ export async function getCurrentUser() {
   } = await supabase.auth.getUser();
 
   return user;
+}
+
+export async function getBinanceUserInfo(userInfo: BinanceUser) {
+  if (!userInfo || !userInfo.api_key || !userInfo.secret_key) {
+    console.error('Missing required API credentials');
+    return null;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/account`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        apiKey: userInfo.api_key,
+        apiSecret: userInfo.secret_key
+      }),
+      mode: 'cors'
+    });
+
+    const data = await response.json();
+    
+    if (!data.success) {
+      console.error('Error from Binance API:', data.error);
+      return null;
+    }
+
+    // 处理账户数据
+    const accountData = data.data;
+    const spotAssets = accountData.balances
+      .filter((balance: any) => parseFloat(balance.free) > 0 || parseFloat(balance.locked) > 0)
+      .map((balance: any) => ({
+        coin: balance.asset,
+        balance: (parseFloat(balance.free) + parseFloat(balance.locked)).toString(),
+        value: 0, // 这个需要额外调用价格API来计算
+        price: 0, // 需要额外调用价格API
+        change24h: 0, // 需要额外调用24小时价格变化API
+        priceAlert: { high: 0, low: 0 } // 这个可能需要从你的数据库中获取
+      }));
+
+    return {
+      success: true,
+      data: {
+        currencies: mockData.currencies, // 保持原有的货币列表
+        spotAssets,
+        accountInfo: {
+          makerCommission: accountData.makerCommission,
+          takerCommission: accountData.takerCommission,
+          buyerCommission: accountData.buyerCommission,
+          sellerCommission: accountData.sellerCommission,
+          canTrade: accountData.canTrade,
+          canWithdraw: accountData.canWithdraw,
+          canDeposit: accountData.canDeposit,
+        },
+        usdtFutures: mockData.usdtFutures // 如果需要期货数据，需要调用不同的API
+      }
+    };
+  } catch (error) {
+    console.error('Error in getBinanceUserInfo:', error);
+    return null;
+  }
 }
 
 // Mock data for the trading dashboard

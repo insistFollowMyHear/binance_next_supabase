@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getCurrentUser, getBinanceUser } from "@/app/services/binance";
+import { getCurrentUser, getBinanceUser, getBinanceUserInfo } from "@/app/services/binance";
 
 interface Currency {
   id: string;
@@ -105,6 +105,7 @@ export default async function Home() {
 
   const binanceUser = await getBinanceUser(user.id);
   const hasApiKey = binanceUser?.api_key && binanceUser?.secret_key;
+  const binanceUserInfo = await getBinanceUserInfo(binanceUser as any);
 
   if (!hasApiKey) {
     return (
