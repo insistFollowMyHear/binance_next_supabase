@@ -8,11 +8,18 @@ import Link from "next/link";
 export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
   return (
-    <div className="w-full flex-1 flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-[100vh] w-full flex items-center justify-center relative overflow-hidden bg-gradient-to-b from-background to-background/95">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-primary/30 rounded-full filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 -right-4 w-72 h-72 bg-primary/30 rounded-full filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary/30 rounded-full filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div className="relative z-10 w-full max-w-md mx-auto p-6 space-y-12">
         {/* Logo and Title Section */}
-        <div className="text-center space-y-3">
-          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary via-primary/80 to-primary/50 bg-clip-text text-transparent">
+        <div className="text-center space-y-4">
+          <h1 className="text-5xl font-bold tracking-tight bg-gradient-to-r from-primary via-primary/80 to-primary/50 bg-clip-text text-transparent animate-gradient">
             币安
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -21,7 +28,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
         </div>
 
         {/* Login Form Section */}
-        <div className="backdrop-blur-sm bg-card/30 border border-primary/10 rounded-2xl p-8 shadow-xl shadow-primary/5">
+        <div className="backdrop-blur-xl bg-card/30 border border-primary/10 rounded-2xl p-8 shadow-2xl shadow-primary/5 space-y-8">
           <form className="flex flex-col gap-6">
             <div className="space-y-2">
               <h2 className="text-2xl font-semibold text-center bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
@@ -30,7 +37,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
               <p className="text-sm text-center text-muted-foreground">
                 没有账户？{" "}
                 <Link 
-                  className="text-primary hover:text-primary/80 transition-colors font-medium" 
+                  className="text-primary hover:text-primary/80 transition-colors font-medium hover:underline" 
                   href="/sign-up"
                 >
                   注册
@@ -50,7 +57,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
                   name="email" 
                   placeholder="you@example.com" 
                   required
-                  className="bg-background/50 border-primary/20 focus:border-primary transition-colors"
+                  className="bg-background/50 border-primary/20 focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
@@ -63,7 +70,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
                     密码
                   </Label>
                   <Link
-                    className="text-xs text-primary hover:text-primary/80 transition-colors"
+                    className="text-xs text-primary hover:text-primary/80 transition-colors hover:underline"
                     href="/forgot-password"
                   >
                     忘记密码？
@@ -74,7 +81,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
                   name="password"
                   placeholder="您的密码"
                   required
-                  className="bg-background/50 border-primary/20 focus:border-primary transition-colors"
+                  className="bg-background/50 border-primary/20 focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
@@ -82,7 +89,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
             <SubmitButton 
               pendingText="登录中..." 
               formAction={signInAction}
-              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground transition-all duration-300"
+              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
             >
               登录
             </SubmitButton>
