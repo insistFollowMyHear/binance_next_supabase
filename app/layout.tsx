@@ -4,7 +4,6 @@ import HeaderAuth from "@/components/header-auth";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import "./globals.css";
 import { createClient } from "@/utils/supabase/server";
@@ -18,6 +17,8 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { MobileNav } from "@/components/mobile-nav";
+import { Providers } from "./providers";
+import { UserProvider } from "@/components/user-provider";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -45,15 +46,23 @@ export default async function RootLayout({
   } = await supabase.auth.getUser();
   const isLoggedIn = !!user;
 
+  // 获取当前用户的币安账户ID
+  let currentBinanceUserId = null;
+  if (user) {
+    const { data: preferences } = await supabase
+      .from('user_preferences')
+      .select('current_binance_user_id')
+      .eq('user_id', user.id)
+      .single();
+    
+    currentBinanceUserId = preferences?.current_binance_user_id || null;
+  }
+
   return (
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
+          {isLoggedIn && <UserProvider user={user} binanceUser={currentBinanceUserId} />}
           <main className="min-h-screen flex flex-col items-center">
             <div className="flex-1 w-full flex flex-col items-center">
               { isLoggedIn &&
@@ -123,7 +132,7 @@ export default async function RootLayout({
               </div>
             </div>
           </main>
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

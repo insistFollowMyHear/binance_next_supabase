@@ -1,6 +1,8 @@
 'use client'
 
 import { cn } from "@/lib/utils"
+import { useEffect, useState } from "react"
+// import { getBinanceDepth } from "@/app/services/binance"
 
 interface OrderBookProps {
   symbol: string
@@ -14,6 +16,7 @@ interface OrderBookItem {
 }
 
 export default function OrderBook({ symbol }: OrderBookProps) {
+
   // 模拟数据，实际应该从API获取
   const asks: OrderBookItem[] = [
     { price: '43525.12', amount: '0.125', total: '5440.64', percentage: 20 },
