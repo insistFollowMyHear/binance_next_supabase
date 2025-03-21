@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useAppSelector } from "@/lib/redux/hooks"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
 import OrderForm from "@/app/components/trading/spot/OrderForm"
@@ -9,21 +8,23 @@ import MarketInfo from "@/app/components/trading/spot/MarketInfo"
 import OrderBook from "@/app/components/trading/spot/OrderBook"
 import RecentTrades from "@/app/components/trading/spot/RecentTrades"
 import OrderHistory from "@/app/components/trading/spot/OrderHistory"
+import { useAppSelector } from "@/lib/redux/hooks"
+import { redirect } from "next/navigation"
 export default function SpotTradingPage() {
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn)
+  if (!isLoggedIn) {
+    redirect('/sign-in')
+  }
+
   const [symbol, setSymbol] = useState('BTC/USDT')
   const [orderType, setOrderType] = useState<'limit' | 'market'>('limit')
 
-  // 获取当前选中的币安账户
-  const user = useAppSelector(state => state.user)
-  console.log(user)
-
-
   return (
     // 版心宽度调整
-    <div className="w-full max-w-screen-lg mx-auto p-4 md:p-10">
+    <div className="w-full max-w-screen-xl mx-auto p-4 md:p-10">
       {/* 订单簿和最近成交 和 行情信息和交易表单 一栏*/}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="md:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <div className="md:col-span-3">
           <div className="space-y-4">
             <Card className="p-4">
               <OrderBook symbol={symbol} />

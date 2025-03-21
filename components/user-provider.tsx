@@ -20,6 +20,8 @@ export function UserProvider({
         id: user.id,
         email: user.email,
         isLoggedIn: true,
+        apiKey: user.user_metadata.apiKey,
+        secretKey: user.user_metadata.secretKey
       }));
     }
 
