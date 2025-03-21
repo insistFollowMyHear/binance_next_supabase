@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAppSelector } from "@/lib/redux/hooks"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
 import OrderForm from "@/app/components/trading/spot/OrderForm"
@@ -8,10 +9,14 @@ import MarketInfo from "@/app/components/trading/spot/MarketInfo"
 import OrderBook from "@/app/components/trading/spot/OrderBook"
 import RecentTrades from "@/app/components/trading/spot/RecentTrades"
 import OrderHistory from "@/app/components/trading/spot/OrderHistory"
-
 export default function SpotTradingPage() {
   const [symbol, setSymbol] = useState('BTC/USDT')
   const [orderType, setOrderType] = useState<'limit' | 'market'>('limit')
+
+  // 获取当前选中的币安账户
+  const user = useAppSelector(state => state.user)
+  console.log(user)
+
 
   return (
     // 版心宽度调整
