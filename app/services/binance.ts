@@ -2,8 +2,6 @@ import { createClient } from "@/utils/supabase/server";
 import { User } from "@supabase/supabase-js";
 import Binance from 'node-binance-api';
 
-const API_BASE_URL = "http://52.194.218.184:3001"
-
 export interface BinanceUser {
   id: string;
   api_key: string;
@@ -62,7 +60,7 @@ export async function getBinanceUserInfo(userInfo: BinanceUser) {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/account`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/account`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -115,6 +113,24 @@ export async function getBinanceUserInfo(userInfo: BinanceUser) {
     console.error('Error in getBinanceUserInfo:', error);
     return null;
   }
+}
+
+export async function getBinanceDepth() {
+  const user: any = await getCurrentUser();
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/spot/depth`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      apiKey: user.api_key,
+      apiSecret: user.secret_key,
+      symbol: 'BTCUSDT',
+      limit: '20'
+    })
+  })
+  const data = await response.json();
+  return data;
 }
 
 // Mock data for the trading dashboard
